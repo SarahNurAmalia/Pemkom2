@@ -19,7 +19,7 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 
 public class MongoManager {
     private static MongoClient mongoClient;
-    private static final String DATABASE_NAME = "bank_absensi";
+    private static final String DATABASE_NAME = "cafe_absensi";
 
     public static MongoDatabase getDatabase() {
         if (mongoClient == null) {
