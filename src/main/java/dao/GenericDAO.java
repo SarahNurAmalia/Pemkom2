@@ -1,17 +1,27 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package dao;
+
 import com.mongodb.client.MongoCollection;
-import org.bson.conversions.Bson;
 import java.util.ArrayList;
 import java.util.List;
+import org.bson.conversions.Bson;
+import utill.MongoManager;
 
 /**
-
+ *
+ * @author ASUS
  * @param <T>
  */
 public class GenericDAO<T> implements BaseDAO<T> {
     private final MongoCollection<T> collection;
+    private final Class<T> clazz;
 
     // Konstruktor menerima nama koleksi dan kelas entitas untuk mapping otomatis
     public GenericDAO(String collectionName, Class<T> clazz) {
+        this.clazz = clazz;
         this.collection = MongoManager.getDatabase().getCollection(collectionName, clazz);
     }
 

@@ -8,12 +8,12 @@ package gui;
  *
  * @author Advan
  */
-public class halaman_login extends javax.swing.JPanel {
+public class LoginPage extends javax.swing.JPanel {
 
     /**
      * Creates new form halaman_login
      */
-    public halaman_login() {
+    public LoginPage() {
         initComponents();
     }
 
