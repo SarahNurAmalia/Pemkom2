@@ -128,4 +128,10 @@ public class SerialService {
         return activePort != null && activePort.isOpen();
     }
     
+    public void simulateBroadcast(String mockUid) {
+       for (SerialDataHandler<String> handler : handlers) {
+        handler.onDataReceived(mockUid);
+    }
+    }
+    
 }

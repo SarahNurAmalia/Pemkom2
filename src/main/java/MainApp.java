@@ -1,5 +1,6 @@
 
-import gui.AdminPage;
+import gui.KaryawanPanel;
+import gui.LoginPage;
 import service.SerialService;
 import javax.swing.JFrame;
 
@@ -62,7 +63,12 @@ public class MainApp extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("jButton2");
+        jButton2.setText("Attandance Page");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("jButton3");
 
@@ -121,12 +127,22 @@ public class MainApp extends javax.swing.JFrame {
         // TODO add your handling code here:
        JFrame frame = new JFrame("Admin Page");
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    frame.setContentPane(new AdminPage());
+    frame.setContentPane(new KaryawanPanel());
     frame.pack();
     frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     frame.setLocationRelativeTo(null);
     frame.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        JFrame frame = new JFrame("Attendance Page");
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    frame.setContentPane(new gui.AttendancePage());
+    frame.pack();
+    frame.setLocationRelativeTo(null);
+    frame.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -150,7 +166,15 @@ public class MainApp extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new MainApp().setVisible(true));
+        
+    java.awt.EventQueue.invokeLater(() -> {
+        JFrame frame = new JFrame("Login");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(new LoginPage());
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

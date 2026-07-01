@@ -4,6 +4,9 @@
  */
 package gui;
 
+import javax.swing.JOptionPane;
+import service.AuthService;
+
 /**
  *
  * @author Advan
@@ -15,6 +18,8 @@ public class LoginPage extends javax.swing.JPanel {
      */
     public LoginPage() {
         initComponents();
+
+        jTextField2.requestFocus();
     }
 
     /**
@@ -44,6 +49,11 @@ public class LoginPage extends javax.swing.JPanel {
         jLabel2.setText("Password");
 
         jButton1.setText("Login");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(242, 242, 242));
@@ -92,6 +102,10 @@ public class LoginPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        doLogin();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -101,4 +115,20 @@ public class LoginPage extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
+    
+    private void doLogin() {
+        String username = jTextField2.getText();
+        String password = jTextField1.getText();
+        if (username.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Mohon isi Username Anda");
+            jTextField2.requestFocus();
+        } else if (password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Mohon isi Password Anda");
+            jTextField1.requestFocus();
+        } else {
+            AuthService userService = new AuthService();
+            userService.login(username, password, this);
+        }
+    }
+
 }
