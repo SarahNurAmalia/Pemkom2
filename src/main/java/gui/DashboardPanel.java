@@ -8,7 +8,7 @@ package gui;
  *
  * @author ASUS
  */
-public class DashboardPanel extends javax.swing.JPanel {
+public class DashboardPanel extends javax.swing.JPanel implements service.I18nService.I18nChangeListener {
 
     /**
      * Creates new form DashboardPanel
@@ -17,6 +17,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         initComponents();
         
         buildDashboard();
+        service.I18nService.registerListener(this);
     }
 
     /**
@@ -45,46 +46,67 @@ public class DashboardPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
 private void buildDashboard() {
-
     removeAll();
     setLayout(new java.awt.BorderLayout());
+    setBackground(new java.awt.Color(245, 235, 220));
+
+    // Title header - HARUS DI ATAS
+    javax.swing.JLabel lblHeader = new javax.swing.JLabel(service.I18nService.get("dashboard.title"));
+    lblHeader.setFont(new java.awt.Font("Segoe UI", 1, 22));
+    lblHeader.setForeground(new java.awt.Color(62, 38, 18));
+    lblHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 25, 10, 0));
+    add(lblHeader, java.awt.BorderLayout.PAGE_START);
 
     javax.swing.JPanel main = new javax.swing.JPanel();
-    main.setBackground(java.awt.Color.WHITE);
+    main.setBackground(new java.awt.Color(245, 235, 220));
     main.setLayout(new java.awt.GridLayout(2, 2, 20, 20));
-    main.setBorder(javax.swing.BorderFactory.createEmptyBorder(20,20,20,20));
+    main.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 20, 20));
 
-    main.add(createCard("Total Karyawan", "120"));
-    main.add(createCard("Hadir Hari Ini", "98"));
-    main.add(createCard("Tanggal", java.time.LocalDate.now().toString()));
-    main.add(createCard("Jam", java.time.LocalTime.now().toString()));
+    String jam = java.time.LocalTime.now()
+        .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
+
+    service.KaryawanService krService = new service.KaryawanService();
+    int totalKaryawan = krService.getTotalKaryawan();
+
+    main.add(createCard(service.I18nService.get("dashboard.totalkaryawan"), String.valueOf(totalKaryawan), new java.awt.Color(139, 90, 43), new java.awt.Color(255, 220, 150)));
+    main.add(createCard(service.I18nService.get("dashboard.hadir"), "98", new java.awt.Color(62, 38, 18), new java.awt.Color(255, 183, 77)));
+    main.add(createCard(service.I18nService.get("dashboard.tanggal"), java.time.LocalDate.now().toString(), new java.awt.Color(30, 18, 8), new java.awt.Color(255, 220, 150)));
+    main.add(createCard(service.I18nService.get("dashboard.jam"), jam, new java.awt.Color(44, 28, 14), new java.awt.Color(255, 183, 77)));
 
     add(main, java.awt.BorderLayout.CENTER);
-
     revalidate();
     repaint();
 }
 
-private javax.swing.JPanel createCard(String title, String value){
-
+private javax.swing.JPanel createCard(String title, String value, java.awt.Color bgColor, java.awt.Color textColor) {
     javax.swing.JPanel card = new javax.swing.JPanel();
-    card.setBackground(new java.awt.Color(245,245,245));
-    card.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.LIGHT_GRAY));
+    card.setBackground(bgColor);
+    card.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+        javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 183, 77), 2, true),
+        javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)
+    ));
     card.setLayout(new java.awt.BorderLayout());
 
     javax.swing.JLabel lblTitle = new javax.swing.JLabel(title);
     lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    lblTitle.setFont(new java.awt.Font("Segoe UI",1,16));
+    lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 16));
+    lblTitle.setForeground(textColor);
 
     javax.swing.JLabel lblValue = new javax.swing.JLabel(value);
     lblValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    lblValue.setFont(new java.awt.Font("Segoe UI",1,28));
+    lblValue.setFont(new java.awt.Font("Segoe UI", 1, 36));
+    lblValue.setForeground(textColor);
 
     card.add(lblTitle, java.awt.BorderLayout.NORTH);
     card.add(lblValue, java.awt.BorderLayout.CENTER);
-
     return card;
 }
 
+@Override
+public void onLanguageChanged() {
+    javax.swing.SwingUtilities.invokeLater(() -> {
+        buildDashboard();
+    });
+}
 
 }

@@ -4,21 +4,39 @@
  */
 package gui;
 
+import java.util.Locale;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
+import palette.SlidingLanguageToggle;
+import service.I18nService;
 
 /**
  *
  * @author ASUS
  */
 
-public class Settings extends JPanel {
+public class Settings extends JPanel implements service.I18nService.I18nChangeListener {
 
     public static String statusAbsen = "Masuk";
+    
     public static Preferences prefs = Preferences.userNodeForPackage(Settings.class);
+    public static String statusLang = "id";
+    private palette.SlidingLanguageToggle langToggle;
 
     public Settings() {
+        I18nService.setLocale(Locale.of(prefs.get("LANGUAGE", "id")));
         initComponents();
+        statusAbsen = prefs.get("LAST_STATUS", "Masuk");
+        statusLang = prefs.get("LANGUAGE", "id");
+        slidingStatusToggle1.setStatusByString(statusAbsen);
+       
+        I18nService.registerListener(this);
+        langToggle = new SlidingLanguageToggle();
+        langToggle.setSelectedLanguageIndexByString(statusLang);
+    
+        buildUI(); 
+
+        
     }
     /**
      * Creates new form Settings
@@ -91,6 +109,7 @@ public class Settings extends JPanel {
     
     }//GEN-LAST:event_slidingStatusToggle1ActionPerformed
 
+    
 
                              
     
@@ -98,4 +117,84 @@ public class Settings extends JPanel {
     private javax.swing.JPanel jPanel1;
     private palette.SlidingStatusToggle slidingStatusToggle1;
     // End of variables declaration//GEN-END:variables
+
+    private void buildUI() {
+    setLayout(new java.awt.BorderLayout());
+    setBackground(new java.awt.Color(245, 235, 220));
+
+    javax.swing.JLabel lblTitle = new javax.swing.JLabel(service.I18nService.get("sidebar.settings"));
+    lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 22));
+    lblTitle.setForeground(new java.awt.Color(62, 38, 18));
+    lblTitle.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 25, 10, 0));
+    add(lblTitle, java.awt.BorderLayout.PAGE_START);
+
+    javax.swing.JPanel mainPanel = new javax.swing.JPanel();
+    mainPanel.setBackground(new java.awt.Color(245, 235, 220));
+    mainPanel.setLayout(new java.awt.GridLayout(2, 1, 20, 20));
+    mainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+    // Card Status
+    javax.swing.JPanel cardStatus = new javax.swing.JPanel(new java.awt.BorderLayout());
+    cardStatus.setBackground(new java.awt.Color(62, 38, 18));
+    cardStatus.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+        javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 183, 77), 2, true),
+        javax.swing.BorderFactory.createEmptyBorder(15, 15, 15, 15)
+    ));
+    javax.swing.JLabel lblStatus = new javax.swing.JLabel(service.I18nService.get("attendance.status"));
+    lblStatus.setFont(new java.awt.Font("Segoe UI", 1, 16));
+    lblStatus.setForeground(new java.awt.Color(255, 183, 77));
+    cardStatus.add(lblStatus, java.awt.BorderLayout.PAGE_START);
+
+    // Wrapper tengah untuk toggle status
+    javax.swing.JPanel statusWrapper = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 20));
+    statusWrapper.setBackground(new java.awt.Color(62, 38, 18));
+    slidingStatusToggle1.setPreferredSize(new java.awt.Dimension(350, 45));
+    statusWrapper.add(slidingStatusToggle1);
+    cardStatus.add(statusWrapper, java.awt.BorderLayout.CENTER);
+
+    // Card Bahasa
+    javax.swing.JPanel cardBahasa = new javax.swing.JPanel(new java.awt.BorderLayout());
+    cardBahasa.setBackground(new java.awt.Color(62, 38, 18));
+    cardBahasa.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+        javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 183, 77), 2, true),
+        javax.swing.BorderFactory.createEmptyBorder(15, 15, 15, 15)
+    ));
+    javax.swing.JLabel lblBahasa = new javax.swing.JLabel(service.I18nService.get("settings.language"));
+    lblBahasa.setFont(new java.awt.Font("Segoe UI", 1, 16));
+    lblBahasa.setForeground(new java.awt.Color(255, 183, 77));
+    cardBahasa.add(lblBahasa, java.awt.BorderLayout.PAGE_START);
+
+    langToggle.setPreferredSize(new java.awt.Dimension(350, 45));
+    javax.swing.JPanel langWrapper = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 20));
+    langWrapper.setBackground(new java.awt.Color(62, 38, 18));
+    langWrapper.add(langToggle);
+    cardBahasa.add(langWrapper, java.awt.BorderLayout.CENTER);
+
+    mainPanel.add(cardStatus);
+    mainPanel.add(cardBahasa);
+    add(mainPanel, java.awt.BorderLayout.CENTER);
+
+    revalidate();
+    repaint();
 }
+
+@Override
+public void onLanguageChanged() {
+    javax.swing.SwingUtilities.invokeLater(() -> {
+        // Simpan state toggle sebelum rebuild
+        boolean isSelected = slidingStatusToggle1.isSelected();
+        removeAll();
+        buildUI();
+        // Restore state toggle
+        slidingStatusToggle1.setSelected(isSelected);
+        revalidate();
+        repaint();
+    });
+}
+
+
+}
+
+
+
+

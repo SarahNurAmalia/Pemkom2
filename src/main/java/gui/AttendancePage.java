@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import object.Karyawan;
 import service.DigitalClockService;
+import service.I18nService;
 import service.KaryawanService;
 import service.LogAbsensiService;
 import service.SerialService;
@@ -18,7 +19,7 @@ import utill.SecurityUtils;
  *
  * @author ASUS
  */
-public class AttendancePage extends javax.swing.JFrame {
+public class AttendancePage extends javax.swing.JFrame implements service.I18nService.I18nChangeListener {
 
         // Referensi thread disimpan untuk ditrack jika dibutuhkan (misal: untuk
         // stop/cek status)
@@ -31,12 +32,14 @@ public class AttendancePage extends javax.swing.JFrame {
          */
         public AttendancePage() {
                 initComponents();
+                applyTheme();
                 initClock(jLabel2);
-                jLabel8.setText(Settings.prefs.get("LAST_STATUS", Settings.statusAbsen));
+                updateStatusLabel();
 
                 // inisialisasi thread delayThread
                 updateLabelWithDelay(jLabel8, "");
                 setupAttendanceWorkflow();
+                service.I18nService.registerListener(this);
         }
 
         /**
@@ -232,7 +235,7 @@ public class AttendancePage extends javax.swing.JFrame {
          */
         public static void main(String args[]) {
                 
-        System.setProperty("KEY", "CafeAbsensi1234"); // ← tambah ini
+        System.setProperty("KEY", "CafeAbsensi1234"); // 
     java.awt.EventQueue.invokeLater(() -> {
         new AttendancePage().setVisible(true);
     });
@@ -291,7 +294,7 @@ public class AttendancePage extends javax.swing.JFrame {
                 if (isSuccess) {
                     // Update Card UI dengan data dari objek Karyawan [14, 15]
                     if (k != null) {
-                    jLabel4.setText("Nama Lengkap: " + k.getNamaLengkap());
+                    jLabel4.setText(service.I18nService.get("attendance.nama") + " " + k.getNamaLengkap());
 
                     String rawId = k.getIdKaryawan();
                     String idKaryawan;
@@ -301,9 +304,9 @@ public class AttendancePage extends javax.swing.JFrame {
                         idKaryawan = EncryptionUtils.decrypt(rawId);
                         if (idKaryawan == null) idKaryawan = "(gagal decrypt)";
                     }
-                    jLabel5.setText("ID Karyawan: " + idKaryawan);
-                    jLabel6.setText("Jabatan: " + k.getJabatan());
-                    updateLabelWithDelay(jLabel8, "Absensi diterima. Terimakasih");
+                    jLabel5.setText(service.I18nService.get("attendance.id") + " " + idKaryawan);
+                    jLabel6.setText(service.I18nService.get("attendance.jabatan") + " " + service.I18nService.get("jabatan." + k.getJabatan().toLowerCase()));
+                    updateLabelWithDelay(jLabel8, service.I18nService.get("attendance.accepted"));
 }
                 }
             });
@@ -311,27 +314,171 @@ public class AttendancePage extends javax.swing.JFrame {
     }
 
     private void updateLabelWithDelay(JLabel comp, String info) {
-        if (delayThread != null && delayThread.isAlive()) {
-            delayThread.interrupt();
+
+    if (delayThread != null && delayThread.isAlive()) {
+        delayThread.interrupt();
+    }
+
+    delayThread = new Thread(() -> {
+
+        comp.setText(info);
+
+        try {
+
+            for (int i = 3; i >= 1; i--) {
+                Thread.sleep(1000);
+            }
+
+            SwingUtilities.invokeLater(() -> {
+
+                String status = Settings.prefs.get("LAST_STATUS", "Masuk");
+
+                if (status.equals("Masuk")) {
+                    comp.setText(I18nService.get("status.masuk"));
+                } else {
+                    comp.setText(I18nService.get("status.pulang"));
+                }
+
+            });
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        delayThread = new Thread(() -> {
-            comp.setText(info); 
-            try {
-                for (int i = 3; i >= 1; i--) {
-                    Thread.sleep(1000);
-                }
-                
-                SwingUtilities.invokeLater(() -> comp.setText(Settings.prefs.get("LAST_STATUS", Settings.statusAbsen)));
+    });
 
-            } catch (InterruptedException e) {
-                // Penanganan jika thread dihentikan paksa (Interrupted)
-            }
-        });
+    delayThread.setName("delayThread");
+    delayThread.setDaemon(true);
+    delayThread.start();
+}
+    private void applyTheme() {
+    // Header jam
+    jPanel2.setBackground(new java.awt.Color(44, 28, 14));
+    jPanel2.setLayout(new java.awt.BorderLayout());
+    jLabel2.setForeground(new java.awt.Color(255, 183, 77));
+    jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36));
+    jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    jPanel2.add(jLabel2, java.awt.BorderLayout.CENTER);
 
-        delayThread.setName("delayThread"); 
-        delayThread.setDaemon(true);         
-        delayThread.start();
+    
+    // Label tap kartu
+    jLabel3.setText(service.I18nService.get("attendance.tap"));
+    jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 22));
+    jLabel3.setForeground(new java.awt.Color(255, 220, 150));
+    jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+    // TextField RFID
+    jTextField1.setBackground(new java.awt.Color(50, 35, 20));
+    jTextField1.setForeground(new java.awt.Color(255, 220, 150));
+    jTextField1.setCaretColor(new java.awt.Color(255, 183, 77));
+    jTextField1.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+        javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 183, 77), 2, true),
+        javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10)
+    ));
+    jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14));
+    
+    jTextField1.setMaximumSize(new java.awt.Dimension(300, 40));
+    jTextField1.setPreferredSize(new java.awt.Dimension(300, 40));
+
+    // Card info karyawan
+    jPanel7.setBackground(new java.awt.Color(62, 38, 18));
+    jPanel7.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+        javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 183, 77), 2, true),
+        javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        
+    ));
+    
+    jPanel7.setMaximumSize(new java.awt.Dimension(600, 120));
+jPanel7.setPreferredSize(new java.awt.Dimension(600, 120));
+
+    // Avatar
+    jLabel7.setBackground(new java.awt.Color(139, 90, 43));
+    jLabel7.setForeground(new java.awt.Color(255, 220, 150));
+    jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12));
+
+    // Label info karyawan
+    // Label info karyawan
+    jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 13));
+    jLabel4.setForeground(new java.awt.Color(255, 220, 150));
+    jLabel4.setText(service.I18nService.get("attendance.nama"));
+
+    jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 13));
+    jLabel5.setForeground(new java.awt.Color(255, 220, 150));
+    jLabel5.setText(service.I18nService.get("attendance.id"));
+
+    jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 13));
+    jLabel6.setForeground(new java.awt.Color(255, 220, 150));
+    jLabel6.setText(service.I18nService.get("attendance.jabatan"));
+
+    // Status bar
+    jLabel8.setBackground(new java.awt.Color(139, 90, 43));
+    jLabel8.setForeground(java.awt.Color.WHITE);
+    jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14));
+
+    // Rebuild layout
+    getContentPane().removeAll();
+    getContentPane().setLayout(new java.awt.BorderLayout());
+    getContentPane().setBackground(new java.awt.Color(30, 18, 8));
+    getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_START);
+
+    // Content panel tengah
+    javax.swing.JPanel contentPanel = new javax.swing.JPanel();
+    contentPanel.setBackground(new java.awt.Color(30, 18, 8));
+    contentPanel.setLayout(new java.awt.GridBagLayout());
+
+    // Inner panel berisi semua konten
+    javax.swing.JPanel innerPanel = new javax.swing.JPanel();
+    innerPanel.setBackground(new java.awt.Color(30, 18, 8));
+    innerPanel.setLayout(new javax.swing.BoxLayout(innerPanel, javax.swing.BoxLayout.Y_AXIS));
+    innerPanel.setPreferredSize(new java.awt.Dimension(700, 400));
+
+    jLabel3.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+    jTextField1.setMaximumSize(new java.awt.Dimension(600, 40));
+    jTextField1.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+    jPanel7.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+    jLabel8.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+    jLabel8.setMaximumSize(new java.awt.Dimension(600, 35));
+
+    innerPanel.add(javax.swing.Box.createVerticalStrut(30));
+    innerPanel.add(jLabel3);
+    innerPanel.add(javax.swing.Box.createVerticalStrut(15));
+    innerPanel.add(jTextField1);
+    innerPanel.add(javax.swing.Box.createVerticalStrut(20));
+    innerPanel.add(jPanel7);
+    innerPanel.add(javax.swing.Box.createVerticalStrut(5));
+    innerPanel.add(jLabel8);
+
+    contentPanel.add(innerPanel);
+    getContentPane().add(contentPanel, java.awt.BorderLayout.CENTER);
+
+    revalidate();
+    repaint(); 
+}
+    
+    
+    
+private void updateStatusLabel() {
+
+    String status = Settings.prefs.get("LAST_STATUS", "Masuk");
+
+    if (status.equals("Masuk")) {
+        jLabel8.setText(service.I18nService.get("status.masuk"));
+    } else {
+        jLabel8.setText(service.I18nService.get("status.pulang"));
     }
+}
+    @Override
+public void onLanguageChanged() {
+    
+    SwingUtilities.invokeLater(() -> {
+        applyTheme();
+        updateStatusLabel();
+
+        revalidate();
+        repaint();
+    });
+}
+    
+    
 
 }

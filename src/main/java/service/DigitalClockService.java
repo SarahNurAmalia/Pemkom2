@@ -29,22 +29,23 @@ public class DigitalClockService {
      */
     public Thread getThread() {
         Runnable clockTask = () -> {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, Locale.of("id", "ID"));
-            try {
-                while (!Thread.currentThread().isInterrupted()) {
-                    LocalDateTime now = LocalDateTime.now();
-                    String timeFormatted = now.format(formatter);
+    try {
+        while (!Thread.currentThread().isInterrupted()) {
 
-                    // Update label secara asinkron
-                    targetLabel.setText(timeFormatted);
+            DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern(pattern, I18nService.getCurrentLocale());
 
-                    Thread.sleep(1000);
-                }
-            } catch (InterruptedException e) {
-                // Penanganan saat thread di-track dan dihentikan sengaja
-                System.out.println(Thread.currentThread().getName() + " dihentikan.");
-            }
-        };
+            LocalDateTime now = LocalDateTime.now();
+            String timeFormatted = now.format(formatter);
+
+            targetLabel.setText(timeFormatted);
+
+            Thread.sleep(1000);
+        }
+    } catch (InterruptedException e) {
+        System.out.println(Thread.currentThread().getName() + " dihentikan.");
+    }
+};
 
         return new Thread(clockTask);
     }

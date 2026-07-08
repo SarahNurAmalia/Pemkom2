@@ -4,6 +4,9 @@
  */
 package gui;
 
+import java.awt.Color;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import object.Karyawan;
 import service.KaryawanService;
 import utill.EncryptionUtils;
@@ -13,14 +16,99 @@ import utill.SecurityUtils;
  *
  * @author ASUS
  */
-public class KaryawanPanel extends javax.swing.JPanel {
+public class KaryawanPanel extends javax.swing.JPanel implements service.I18nService.I18nChangeListener {
+    
+    
 
     /**
      * Creates new form admin_page
      */
     public KaryawanPanel() {
         initComponents();
+       
+        loadSearchIcon();
+        customStyle();
+        
+        // Style labels
+jLabel1.setForeground(new java.awt.Color(255, 220, 150));
+jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 13));
+jLabel2.setForeground(new java.awt.Color(255, 220, 150));
+jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 13));
+jLabel3.setForeground(new java.awt.Color(255, 220, 150));
+jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 13));
+jLabel4.setForeground(new java.awt.Color(255, 220, 150));
+jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 13));
+
+// Style panel atas
+jPanel3.setBackground(new java.awt.Color(74, 44, 18));
+jPanel5.setBackground(new java.awt.Color(74, 44, 18));
+
+// Style panel bawah (card area)
+jPanel4.setBackground(new java.awt.Color(62, 38, 18));
+
+// Apply i18n
+applyI18n();
+
+// Register listener
+service.I18nService.registerListener(this);
+        
+        setBackground(new java.awt.Color(60, 40, 15)); // coklat tua
+
+    jPanel1.setBackground(new java.awt.Color(235, 235, 235)); 
+    jPanel2.setBackground(new java.awt.Color(106, 80, 20));   
+    
+    txtCari.setText(service.I18nService.get("karyawan.cari"));
+txtCari.setForeground(Color.GRAY);
+    txtCari.setBackground(new java.awt.Color(255, 248, 220)); // cream
+txtCari.setForeground(new java.awt.Color(60, 60, 60));
+txtCari.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+        javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 140, 70)),
+        javax.swing.BorderFactory.createEmptyBorder(5, 8, 5, 8)
+        
+        
+));
         showData("");
+    }
+    
+    private void loadSearchIcon() {
+
+    ImageIcon icon = new ImageIcon(
+            getClass().getResource("/images/icon-search.png")
+    );
+
+    Image img = icon.getImage().getScaledInstance(
+            18,
+            18,
+            Image.SCALE_SMOOTH
+    );
+
+    lblSearchIcon.setIcon(new ImageIcon(img));
+    lblSearchIcon.setText("");
+}
+    
+    
+        private void customStyle() {
+
+        jPanel1.setBackground(new java.awt.Color(74,44,18));
+        jPanel2.setBackground(new java.awt.Color(94,70,21));
+
+        btnSave.setBackground(new java.awt.Color(212,175,55));
+        btnSave.setForeground(java.awt.Color.BLACK);
+        btnSave.setFocusPainted(false);
+
+        btnUpdate.setBackground(new java.awt.Color(212,175,55));
+        btnUpdate.setForeground(java.awt.Color.BLACK);
+        btnUpdate.setFocusPainted(false);
+
+        btnRefresh.setBackground(new java.awt.Color(139,90,43));
+        btnRefresh.setForeground(java.awt.Color.WHITE);
+        btnRefresh.setFocusPainted(false);
+
+        txtUID.setBackground(new java.awt.Color(255,248,220));
+        txtKRID.setBackground(new java.awt.Color(255,248,220));
+        txtKRName.setBackground(new java.awt.Color(255,248,220));
+
+        txtKRJabt.setBackground(new java.awt.Color(255,248,220));
     }
 
     /**
@@ -46,7 +134,9 @@ public class KaryawanPanel extends javax.swing.JPanel {
         btnSave = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnRefresh = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
         txtCari = new javax.swing.JTextField();
+        lblSearchIcon = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -60,7 +150,7 @@ public class KaryawanPanel extends javax.swing.JPanel {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        jPanel2.setBackground(new java.awt.Color(94, 70, 21));
+        jPanel2.setBackground(new java.awt.Color(30, 18, 8));
 
         jLabel1.setText("Jabatan");
 
@@ -93,11 +183,52 @@ public class KaryawanPanel extends javax.swing.JPanel {
             }
         });
 
+        jPanel5.setPreferredSize(new java.awt.Dimension(300, 36));
+
+        txtCari.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtCari.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtCari.setPreferredSize(new java.awt.Dimension(250, 28));
+        txtCari.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtCariFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtCariFocusLost(evt);
+            }
+        });
+        txtCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCariActionPerformed(evt);
+            }
+        });
         txtCari.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtCariKeyReleased(evt);
             }
         });
+
+        lblSearchIcon.setPreferredSize(new java.awt.Dimension(28, 28));
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(lblSearchIcon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCari, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                .addGap(23, 23, 23))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSearchIcon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -122,21 +253,21 @@ public class KaryawanPanel extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtKRName)
                     .addComponent(txtKRJabt, 0, 143, Short.MAX_VALUE))
+                .addGap(37, 37, 37)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(68, 68, 68)
-                        .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(124, 124, 124)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnUpdate)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtCari, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -147,22 +278,21 @@ public class KaryawanPanel extends javax.swing.JPanel {
                     .addComponent(btnUpdate))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(jLabel1)
                             .addComponent(txtKRID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtKRJabt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(36, 36, 36))
+                            .addComponent(txtKRJabt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRefresh))
+                        .addGap(83, 83, 83))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(btnRefresh)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        jPanel4.setBackground(new java.awt.Color(30, 18, 8));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -172,7 +302,7 @@ public class KaryawanPanel extends javax.swing.JPanel {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 297, Short.MAX_VALUE)
+            .addGap(0, 320, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -202,7 +332,9 @@ public class KaryawanPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -245,6 +377,29 @@ public class KaryawanPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
         showData(txtCari.getText());
     }//GEN-LAST:event_txtCariKeyReleased
+
+    private void txtCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCariActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCariActionPerformed
+
+    private void txtCariFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCariFocusGained
+        // TODO add your handling code here:
+        
+        if(txtCari.getText().equals(service.I18nService.get("karyawan.cari"))){
+    txtCari.setText("");
+}
+        txtCari.setForeground(Color.BLACK);
+    
+    }//GEN-LAST:event_txtCariFocusGained
+
+    private void txtCariFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCariFocusLost
+        // TODO add your handling code here:
+        
+        if (txtCari.getText().isEmpty()) {
+        txtCari.setText(service.I18nService.get("karyawan.cari"));
+        txtCari.setForeground(Color.GRAY);
+    }
+    }//GEN-LAST:event_txtCariFocusLost
     
         
 
@@ -263,6 +418,8 @@ public class KaryawanPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     public static javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JLabel lblSearchIcon;
     public javax.swing.JTextField txtCari;
     public static javax.swing.JTextField txtKRID;
     public static javax.swing.JComboBox<String> txtKRJabt;
@@ -287,5 +444,37 @@ public class KaryawanPanel extends javax.swing.JPanel {
         btnSave.setEnabled(true);
         txtUID.requestFocus();
     }
+        
+        private void applyI18n() {
+    jLabel1.setText(service.I18nService.get("karyawan.jabatan"));
+    jLabel2.setText(service.I18nService.get("karyawan.uid"));
+    jLabel3.setText(service.I18nService.get("karyawan.id"));
+    jLabel4.setText(service.I18nService.get("karyawan.nama"));
+    btnSave.setText(service.I18nService.get("karyawan.save"));
+    btnUpdate.setText(service.I18nService.get("karyawan.update"));
+    btnRefresh.setText(service.I18nService.get("karyawan.refresh"));
+    txtCari.setText(service.I18nService.get("karyawan.cari"));
+    
+    String selected = txtKRJabt.getSelectedItem() == null ?
+        "" : txtKRJabt.getSelectedItem().toString();
+
+txtKRJabt.removeAllItems();
+
+txtKRJabt.addItem(service.I18nService.get("jabatan.barista"));
+txtKRJabt.addItem(service.I18nService.get("jabatan.admin"));
+txtKRJabt.addItem(service.I18nService.get("jabatan.waiters"));
+txtKRJabt.addItem(service.I18nService.get("jabatan.manager"));
+txtKRJabt.addItem(service.I18nService.get("jabatan.chef"));
+txtKRJabt.addItem(service.I18nService.get("jabatan.cashier"));
+}
+
+@Override
+public void onLanguageChanged() {
+    javax.swing.SwingUtilities.invokeLater(() -> {
+        applyI18n();
+        revalidate();
+        repaint();
+    });
+}
     
 }

@@ -7,6 +7,7 @@ import com.mongodb.client.model.Filters;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
@@ -19,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.bson.conversions.Bson;
 import utill.EncryptionUtils;
+import service.I18nService;
 
 public class KaryawanService {
     private final GenericDAO<Karyawan> DAO;
@@ -54,10 +56,11 @@ public class KaryawanService {
 
         panelTarget.removeAll();
         panelTarget.setLayout(new BorderLayout());
-        panelTarget.setBackground(new Color(94, 70, 21));
+        panelTarget.setBackground(new Color(30, 18, 8));
 
         JPanel gridPanel = new JPanel(new GridLayout(0, 3, 10, 10));
-        gridPanel.setOpaque(false);
+        gridPanel.setOpaque(true);
+        gridPanel.setBackground(new Color(30,18,8));
         gridPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 
@@ -65,14 +68,15 @@ public class KaryawanService {
             try {
             
                 JPanel cardPanel = new JPanel(new GridLayout(4, 1, 0, 0));
-                cardPanel.setBackground(new Color(139, 90, 43));
+                cardPanel.setBackground(new Color(62,38,18)); // coklat tua
                 cardPanel.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(Color.MAGENTA, 1, true),
+                        BorderFactory.createLineBorder(new Color(255,183,77), 2, true),
                         BorderFactory.createEmptyBorder(15, 15, 15, 15)
                 ));
 
-                JLabel lblNama = new JLabel("Nama: " + k.getNamaLengkap());
-                lblNama.setForeground(Color.WHITE);
+                JLabel lblNama = new JLabel(I18nService.get("karyawan.nama") + ": " + k.getNamaLengkap());
+               lblNama.setForeground(Color.WHITE);
+               lblNama.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
 
                 // FIX: handle null dari decrypt
                 String rawId = k.getIdKaryawan();
@@ -83,17 +87,23 @@ public class KaryawanService {
                     idKaryawan = EncryptionUtils.decrypt(rawId);
                     if (idKaryawan == null) idKaryawan = "(gagal decrypt)";
                 }
-                JLabel lblIDK = new JLabel("ID Karyawan: " + idKaryawan);
+                JLabel lblIDK = new JLabel(I18nService.get("karyawan.id") + ": " + idKaryawan);
                 lblIDK.setForeground(Color.WHITE);
-
-                JLabel lblJabt = new JLabel("Jabatan: " + k.getJabatan());
+                lblIDK.setForeground(new Color(245,245,245));
+                lblIDK.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                
+               JLabel lblJabt = new JLabel(I18nService.get("karyawan.jabatan") + ": " + I18nService.get("jabatan." + k.getJabatan().toLowerCase()));
                 lblJabt.setForeground(Color.WHITE);
+                lblJabt.setForeground(new Color(245,245,245));
+                lblJabt.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
                 JPanel controlPanel = new JPanel(new GridLayout(1, 2, 20, 15));
-                controlPanel.setBackground(new Color(237, 125, 49));
+                controlPanel.setBackground(new Color(74,44,18));
 
-                JButton tombolEdit = new JButton("Edit");
-                tombolEdit.setBackground(Color.ORANGE);
+                JButton tombolEdit = new JButton(I18nService.get("karyawan.edit"));
+                tombolEdit.setBackground(new Color(212,175,55));
+                tombolEdit.setForeground(Color.BLACK);
+                tombolEdit.setFocusPainted(false);
                 tombolEdit.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 tombolEdit.addActionListener((ActionEvent e) -> {
                     KaryawanPanel.txtUID.setText(k.getUidRfid());
@@ -105,9 +115,10 @@ public class KaryawanService {
                     KaryawanPanel.btnSave.setEnabled(false);
                 });
 
-                JButton tombolDelete = new JButton("Delete");
-                tombolDelete.setBackground(Color.RED);
+                JButton tombolDelete = new JButton(I18nService.get("karyawan.hapus"));
+                tombolDelete.setBackground(new Color(153,0,0));
                 tombolDelete.setForeground(Color.WHITE);
+                tombolDelete.setFocusPainted(false);
                 tombolDelete.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 tombolDelete.addActionListener((ActionEvent e) -> {
                     Object[] options = {"Ya, Hapus", "Batal"};
@@ -183,5 +194,8 @@ public class KaryawanService {
         return DAO.findOne(filter);
     }
     
+    public int getTotalKaryawan() {
+    return (int) DAO.findAll().size();
+}
     
 }

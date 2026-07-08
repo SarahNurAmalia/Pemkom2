@@ -41,11 +41,15 @@ public class AdminPage extends javax.swing.JFrame {
     getContentPane().add(jPanel3, BorderLayout.LINE_START);
     
     // Area konten kanan
-    appContentPane.setLayout(new BorderLayout());
-    getContentPane().add(appContentPane, BorderLayout.CENTER);
-    
-    revalidate();
-    repaint();
+    // Area konten kanan
+appContentPane.setLayout(new BorderLayout());
+getContentPane().add(appContentPane, BorderLayout.CENTER);
+
+// Tampilkan dashboard langsung
+appContentPane.add(new DashboardPanel(), BorderLayout.CENTER);
+
+revalidate();
+repaint();
 }
 
     /**
@@ -144,7 +148,31 @@ public class AdminPage extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     private void buildHeader() {
+    // Header - coklat tua cafe
+    jPanel1.setBackground(new java.awt.Color(30, 18, 8));
+    jPanel1.setLayout(new BorderLayout());
+    jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
     
+    // Logo/Title di header
+    javax.swing.JLabel lblTitle = new javax.swing.JLabel("Cafe Absensi - Admin Panel");
+    lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 22));
+    lblTitle.setForeground(new java.awt.Color(255, 183, 77));
+    jPanel1.add(lblTitle, BorderLayout.LINE_START);
+    
+    // Footer - coklat tua cafe
+    jPanel2.setBackground(new java.awt.Color(30, 18, 8));
+    jPanel2.setLayout(new BorderLayout());
+    jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 20, 5, 20));
+    
+    // Teks footer
+    javax.swing.JLabel lblFooter = new javax.swing.JLabel("© 2026 Cafe Absensi System");
+    lblFooter.setFont(new java.awt.Font("Segoe UI", 0, 11));
+    lblFooter.setForeground(new java.awt.Color(255, 220, 150));
+    lblFooter.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    jPanel2.add(lblFooter, BorderLayout.CENTER);
+    
+    // Background area konten
+    appContentPane.setBackground(new java.awt.Color(245, 235, 220));
 }
 
 private void startClock() {
@@ -184,12 +212,9 @@ private void startClock() {
 
 public void addContent(JPanel panel){
 
-    appContentPane.removeAll();
-
-    appContentPane.add(panel, BorderLayout.CENTER);
-
-    appContentPane.revalidate();
-    appContentPane.repaint();
+    appContentPane.add(new DashboardPanel(), BorderLayout.CENTER);
+appContentPane.revalidate();
+appContentPane.repaint();
 }
 }
 

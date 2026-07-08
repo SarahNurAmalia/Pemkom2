@@ -19,6 +19,7 @@ public class LoginPage extends javax.swing.JPanel {
     public LoginPage() {
         initComponents();
 
+        applyTheme();
         jTextField2.requestFocus();
     }
 
@@ -34,9 +35,9 @@ public class LoginPage extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JPasswordField();
 
         setBackground(new java.awt.Color(94, 70, 21));
 
@@ -59,6 +60,12 @@ public class LoginPage extends javax.swing.JPanel {
         jLabel3.setForeground(new java.awt.Color(242, 242, 242));
         jLabel3.setText("Halaman Login");
 
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -66,22 +73,23 @@ public class LoginPage extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(152, 152, 152)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(152, 152, 152)
-                        .addComponent(jLabel2))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(119, 119, 119)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextField2))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                            .addComponent(jTextField1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(17, 17, 17)
+                                .addComponent(jLabel3))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(134, 134, 134)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(152, Short.MAX_VALUE))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(166, 166, 166)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(166, 166, 166)
+                        .addComponent(jLabel2)))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -94,9 +102,9 @@ public class LoginPage extends javax.swing.JPanel {
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
+                .addGap(28, 28, 28)
                 .addComponent(jButton1)
                 .addContainerGap(47, Short.MAX_VALUE))
         );
@@ -106,19 +114,23 @@ public class LoginPage extends javax.swing.JPanel {
         doLogin();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPasswordField jTextField1;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
     
     private void doLogin() {
         String username = jTextField2.getText();
-        String password = jTextField1.getText();
+        String password = new String(jTextField1.getPassword());
         if (username.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Mohon isi Username Anda");
             jTextField2.requestFocus();
@@ -130,5 +142,68 @@ public class LoginPage extends javax.swing.JPanel {
             userService.login(username, password, this);
         }
     }
+    
+    private void applyTheme() {
+    // Background utama
+    setBackground(new java.awt.Color(30, 20, 10));
+    
+    // Panel tengah login card
+    setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 60, 40, 60));
 
+    // Title
+    jLabel3.setText("Cafe Absensi");
+    jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 28));
+    jLabel3.setForeground(new java.awt.Color(255, 183, 77));
+    jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    // Label Username & Password
+    jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 13));
+    jLabel1.setForeground(new java.awt.Color(255, 220, 150));
+
+    jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 13));
+    jLabel2.setForeground(new java.awt.Color(255, 220, 150));
+
+    // TextField Username
+    jTextField2.setFont(new java.awt.Font("Segoe UI", 0, 13));
+    jTextField2.setBackground(new java.awt.Color(50, 35, 20));
+    jTextField2.setForeground(new java.awt.Color(255, 220, 150));
+    jTextField2.setCaretColor(new java.awt.Color(255, 183, 77));
+    jTextField2.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+        javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 183, 77), 1, true),
+        javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10)
+    ));
+
+    // TextField Password
+    jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 13));
+    jTextField1.setBackground(new java.awt.Color(50, 35, 20));
+    jTextField1.setForeground(new java.awt.Color(255, 220, 150));
+    jTextField1.setCaretColor(new java.awt.Color(255, 183, 77));
+    jTextField1.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+        javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 183, 77), 1, true),
+        javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10)
+    ));
+
+    // Tombol Login
+    jButton1.setText("Login");
+    jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14));
+    jButton1.setBackground(new java.awt.Color(255, 143, 0));
+    jButton1.setForeground(java.awt.Color.WHITE);
+    jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 143, 0), 2, true));
+    jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    jButton1.setFocusPainted(false);
+    jButton1.setContentAreaFilled(true);
+    jButton1.setOpaque(true);
+    jButton1.setMinimumSize(new java.awt.Dimension(150, 40));
+    jButton1.setPreferredSize(new java.awt.Dimension(150, 40));
+    // Hover effect tombol login
+    jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseEntered(java.awt.event.MouseEvent evt) {
+            jButton1.setBackground(new java.awt.Color(230, 120, 0));
+        }
+        @Override
+        public void mouseExited(java.awt.event.MouseEvent evt) {
+            jButton1.setBackground(new java.awt.Color(255, 143, 0));
+        }
+    });
+    }
 }
