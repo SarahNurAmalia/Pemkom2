@@ -55,7 +55,7 @@ service.I18nService.registerListener(this);
         setBackground(new java.awt.Color(60, 40, 15)); // coklat tua
 
     jPanel1.setBackground(new java.awt.Color(235, 235, 235)); 
-    jPanel2.setBackground(new java.awt.Color(106, 80, 20));   
+    jPanel2.setBackground(new java.awt.Color(30,18,8));   
     
     txtCari.setText(service.I18nService.get("karyawan.cari"));
 txtCari.setForeground(Color.GRAY);
